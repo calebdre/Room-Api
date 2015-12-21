@@ -1,3 +1,4 @@
+# noinspection SqlNoDataSourceInspectionForFile
 drop database if exists room;
 create database if not exists room;
 use room;
@@ -33,6 +34,7 @@ create table if not exists songs(
 	name varchar(80) not null,
 	author varchar(80) default "unavailable",
 	url varchar(150) not null,
+  is_queued integer(1) default 0,
 	thumbnail_url varchar(150),
 
 	room_id integer not null,
