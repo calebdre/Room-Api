@@ -1,0 +1,11 @@
+{
+	"name":"calebdre/room-api",
+	"description": "api for room",
+	"minimum-stability":"dev",
+	"require":{
+		"calebdre/api-sugar":"dev-master"
+	},
+	"autoload":{
+		"psr-4": {"calebdre\\Room\\":"./"}
+	}
+}
