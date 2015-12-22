@@ -3,6 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 
 class Song extends Model{
+    public $timestamps = false;
 
     public function suggester(){
         return $this->belongsTo("calebdre\\Room\\Models\\User");

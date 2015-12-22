@@ -34,7 +34,7 @@ create table if not exists songs(
 	name varchar(80) not null,
 	author varchar(80) default "unavailable",
 	url varchar(150) not null,
-  is_queued integer(1) default 0,
+	is_queued integer(1) default 0,
 	thumbnail_url varchar(150),
 
 	room_id integer not null,
@@ -46,8 +46,8 @@ create table if not exists songs(
 
 create table if not exists votes(
 	id int not null primary key auto_increment,
-	room_id integer not null,
+	song_id  integer not null,
 	user_id integer not null,
 	foreign key(user_id) references users(id) on delete cascade,
-	foreign key(room_id) references rooms(id) on delete cascade
+	foreign key(song_id) references songs(id) on delete cascade
 );
