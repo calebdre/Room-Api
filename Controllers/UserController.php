@@ -2,6 +2,7 @@
 
 use calebdre\ApiSugar\ApiController;
 use calebdre\Room\Models\User;
+use calebdre\Room\Util\Validator;
 use Flight;
 
 class UserController extends ApiController{
@@ -27,20 +28,20 @@ class UserController extends ApiController{
     public function login(){
         $data = Flight::request()->data->getData();
         if($this->checkAgainstRequestParams(['email', 'password']) !== true){
-            $this->error("Please supply both an email and password");
+            $this->fail("Please supply both an email and password");
             return;
         }
 
         $fetch = User::where("email", "=", $data['email']);
         if($fetch->count() == 0){
-            $this->error("User not found");
+            $this->fail("User not found");
             return;
         }
 
         $user = $fetch->first();
-        
+
         if(password_verify($data['password'], $user->password)){
-            $this->success();
+            $this->success("", ['user' => $user->toArray()]);
         }else{
             $this->fail();
         }
@@ -50,7 +51,22 @@ class UserController extends ApiController{
         $data = Flight::request()->data->getData();
 
         if($this->checkAgainstRequestParams(['email', "username", 'password']) !== true){
-            $this->error("Please supply both an email and password and username");
+            $this->fail("Please supply both an email and password and username");
+            return;
+        }
+
+        if(User::where("email", "=", $data['email'])->count() != 0){
+            $this->fail("This email has already been registered.");
+            return;
+        }
+
+        if(User::where("username", "=", $data['username'])->count() != 0){
+            $this->fail("This username has already been taken.");
+            return;
+        }
+
+        if(Validator::validateEmail($data['email'])){
+            $this->fail("You entered an invalid email.");
             return;
         }
 
@@ -58,7 +74,7 @@ class UserController extends ApiController{
         $user->password = password_hash($data["password"], PASSWORD_DEFAULT);
 
         if($user->save()){
-            $this->success();
+            $this->success("", ["user" => $user->toArray()]);
         }else{
             $this->fail();
         }
