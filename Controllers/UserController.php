@@ -22,7 +22,7 @@ class UserController extends ApiController{
     ];
 
     public function all(){
-        Flight::json(User::all());
+        Flight::json(User::with("room")->get());
     }
 
     public function login(){

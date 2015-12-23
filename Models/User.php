@@ -10,4 +10,8 @@ class User extends Model{
     public function suggestedSongs(){
         return $this->hasMany("calebdre\\Room\\Models\\Song");
     }
+
+    public function room(){
+        return $this->hasOne("calebdre\\Room\\Models\\Room");
+    }
 }
