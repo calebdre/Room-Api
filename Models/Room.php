@@ -12,7 +12,7 @@ class Room extends Model{
     }
 
     public function users(){
-        return $this->hasMany("calebdre\\Room\\Models\\User", "users_in_room", "room_id", "user_id");
+        return $this->belongsToMany("calebdre\\Room\\Models\\User", "users_in_room", "room_id", "user_id");
     }
 
     public function queue(){
