@@ -26,11 +26,8 @@ class UserController extends ApiController{
     }
 
     public function login(){
-        $data = Flight::request()->data->getData();
-        if($this->checkAgainstRequestParams(['email', 'password']) !== true){
-            $this->fail("Please supply both an email and password");
-            return;
-        }
+        $this->checkAgainstRequestParams(['email', 'password']);
+        $data = $this->getRequestData();
 
         $fetch = User::where("email", "=", $data['email']);
         if($fetch->count() == 0){
@@ -43,17 +40,13 @@ class UserController extends ApiController{
         if(password_verify($data['password'], $user->password)){
             $this->success("", ['user' => $user->toArray()]);
         }else{
-            $this->fail();
+            $this->fail("The password was incorrect.");
         }
     }
 
     public function register(){
-        $data = Flight::request()->data->getData();
-
-        if($this->checkAgainstRequestParams(['email', "username", 'password']) !== true){
-            $this->fail("Please supply both an email and password and username");
-            return;
-        }
+        $this->checkAgainstRequestParams(['email', "username", 'password']);
+        $data = $this->getRequestData();
 
         if(User::where("email", "=", $data['email'])->count() != 0){
             $this->fail("This email has already been registered.");

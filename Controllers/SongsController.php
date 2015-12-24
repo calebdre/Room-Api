@@ -20,14 +20,8 @@ class SongsController extends ApiController{
     public function vote(){
         $data = $this->getRequestData();
 
-        if($this->checkAgainstRequestParams(['user_id', 'song_id']) !== true){
-            $this->fail("Please pass the user_id and song_id");
-            return;
-        }
-        if(is_null(User::find($data['user_id']))){
-            $this->fail("Could not find the user.");
-            return;
-        }
+        $this->checkAgainstRequestParams(['user_id', 'song_id']);
+        $this->findModelOrFail(new User(), $data['user_id'], "user");
 
         $vote = Vote::create($data);
         $this->success("", ['vote' => $vote->toArray()]);
