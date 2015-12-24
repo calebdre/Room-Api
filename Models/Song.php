@@ -4,14 +4,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Song extends Model{
     public $timestamps = false;
-    protected $fillable = ["name", "author", "url", "thumbnail_url", "user_id", "songs_queue_id"];
+    protected $fillable = ["name", "author", "url", "thumbnail_url", "user_id", "room_id"];
 
     public function suggester(){
         return $this->belongsTo("calebdre\\Room\\Models\\User", "user_id");
     }
 
-    public function queue(){
-        return $this->belongsTo("calebdre\\Room\\Models\\SongQueue", "songs_queue_id");
+    public function room(){
+        return $this->belongsTo("calebdre\\Room\\Models\\Room");
     }
 
     public function votes(){

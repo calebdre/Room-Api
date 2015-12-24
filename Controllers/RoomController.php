@@ -11,7 +11,7 @@ class RoomController extends ApiController{
         "crud" => [
             "model" => "calebdre\\Room\\Models\\Room",
             "resource_name" => "rooms",
-            "eager_relations" => ['queue.songs', "host", "users"],
+            "eager_relations" => ['songs', "host", "users"],
             "not" => ["create","getRelation"]
         ],
         "songs" =>[
@@ -37,30 +37,30 @@ class RoomController extends ApiController{
     }
 
     public function create(){
+        $this->checkAgainstRequestParams(['user_id', "using_harman_speakers", "enter_code", "name"]);
         $data = $this->getRequestData();
 
         $this->findModelOrFail(new User(), $data['user_id'], "user");
-
         $resource = Room::create($data);
-        SongQueue::create(['room_id' => $resource->id]);
 
         $this->success("", ["room" => $resource->toArray()]);
     }
 
     public function addUserToRoom(){
         $this->checkAgainstRequestParams(['room_id', 'user_id']);
-
         $data = $this->getRequestData();
 
         $room = $this->findModelOrFail(new Room(), $data['room_id'], "room");
-        $user = $this->findModelOrFail(new User(), $data['user_id'], "user");
+        $duplicates = $room->whereHas("users", function($q) use ($data){
+            $q->where("user_id", "=", $data['user_id']);
+        });
 
-        if($room->users()->save($user)){
-            $room->load("user");
-            $this->success("", ['room' => $room->toArray()]);
-        }else{
-            $this->fail("Could not add the user to the room.");
+        if($duplicates->count() > 0 || $room->host->id == $data['user_id']){
+            $this->fail("This user is already in the room.");
         }
+
+        $room->users()->attach($data['user_id']);
+        $this->success("", ['room' => $room->toArray()]);
     }
 
     public function removeUserFromRoom(){

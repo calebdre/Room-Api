@@ -9,7 +9,7 @@ class SongsController extends ApiController{
         "crud" => [
             "model" => "calebdre\\Room\\Models\\Song",
             "resource_name" => "songs",
-            "eager_relations" => ["suggester", "queue.room", "votes"],
+            "eager_relations" => ["suggester", "room", "votes"],
         ],
         "vote" => [
             "method" => "post",
