@@ -23,7 +23,7 @@ create table if not exists rooms(
 
 create table if not exists users_in_room(
 	id int not null primary key auto_increment,
-	user_id integer not null unique,
+	user_id integer not null,
 	room_id integer not null,
 
 	foreign key(user_id) references users(id) on delete cascade,

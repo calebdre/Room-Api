@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Song extends Model{
     public $timestamps = false;
-    protected $fillable = ["name", "author", "url", "thumbnail_url", "user_id", "room_id"];
+    protected $fillable = ["name", "author", "url", "thumbnail_url", "user_id", "room_id", "room", "user"];
 
     public function suggester(){
         return $this->belongsTo("calebdre\\Room\\Models\\User", "user_id");

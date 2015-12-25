@@ -24,16 +24,20 @@ class RoomController extends ApiController{
         ],
         "addUserToRoom" => [
             "method" => "post",
-            "route" => "/rooms/user"
+            "route" => "/rooms/users"
         ],
         "removeUserFromRoom" => [
             "method" => "delete",
-            "route" => "/rooms/user"
+            "route" => "/rooms/users"
+        ],
+        "removeRoom" => [
+            "method" => "delete",
+            "route" => "/rooms"
         ]
     ];
 
     public function songs($id){
-        Flight::json(Room::find($id)->queue->songs->toArray());
+        Flight::json(Room::find($id)->songs()->with("votes", "suggester")->get()->toArray());
     }
 
     public function create(){
@@ -42,7 +46,7 @@ class RoomController extends ApiController{
 
         $this->findModelOrFail(new User(), $data['user_id'], "user");
         $resource = Room::create($data);
-
+        $resource->load("host");
         $this->success("", ["room" => $resource->toArray()]);
     }
 
@@ -55,12 +59,16 @@ class RoomController extends ApiController{
             $q->where("user_id", "=", $data['user_id']);
         });
 
-        if($duplicates->count() > 0 || $room->host->id == $data['user_id']){
-            $this->fail("This user is already in the room.");
+        if($duplicates->count() > 0) {
+            $this->fail("This user is already in the room.", ['is_host' => false]);
+        }
+
+        if($room->host->id == $data['user_id']){
+            $this->fail("Hosts are already in the room", ['is_host' => true]);
         }
 
         $room->users()->attach($data['user_id']);
-        $this->success("", ['room' => $room->toArray()]);
+        $this->success("", ['room' => $room->toArray(), "is_host" => false]);
     }
 
     public function removeUserFromRoom(){
@@ -72,5 +80,15 @@ class RoomController extends ApiController{
 
         $room->users()->detach($user->id);
         $this->success();
+    }
+
+    public function removeRoom(){
+        $this->checkAgainstRequestParams(['id']);
+        $data = $this->getRequestData();
+        if(Room::find($data['id'])->delete()){
+            $this->success();
+        }else{
+            $this->fail();
+        }
     }
 }

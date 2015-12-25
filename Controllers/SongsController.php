@@ -1,5 +1,6 @@
 <?php namespace calebdre\Room\Controllers;
 use calebdre\ApiSugar\ApiController;
+use calebdre\Room\Models\Song;
 use calebdre\Room\Models\User;
 use calebdre\Room\Models\Vote;
 use Flight;
@@ -14,6 +15,10 @@ class SongsController extends ApiController{
         "vote" => [
             "method" => "post",
             "route" => "/songs/vote"
+        ],
+        "addMultiple" => [
+            "method" => "post",
+            "route" => "/songs/multiple"
         ]
     ];
 
@@ -25,5 +30,18 @@ class SongsController extends ApiController{
 
         $vote = Vote::create($data);
         $this->success("", ['vote' => $vote->toArray()]);
+    }
+
+    public function addMultiple(){
+        $data = $this->getRequestData();
+        $succeeds = [];
+        foreach($data as $song){
+            $song['room_id'] = $song['room']['id'];
+            $song['user_id'] = $song['room']['host']['id'];
+            unset($song['room']);
+            $succeeds[] = Song::create($song);
+        }
+
+        $this->success("", ["songs" => $succeeds]);
     }
 }
