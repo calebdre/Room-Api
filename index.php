@@ -3,9 +3,11 @@
 include "vendor/autoload.php";
 
 use \calebdre\ApiSugar\Api;
+use calebdre\Room\Controllers\RoomCommunicationController;
 use calebdre\Room\Controllers\RoomController;
 use calebdre\Room\Controllers\SongsController;
 use calebdre\Room\Controllers\UserController;
+use Ratchet\Server\IoServer;
 
 $api = new Api();
 

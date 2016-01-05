@@ -77,9 +77,8 @@ class RoomController extends ApiController{
 
         $room = $this->findModelOrFail(new Room(), $data['room_id'], "room");
         $user = $this->findModelOrFail(new User(), $data['user_id'], "user");
-
         $room->users()->detach($user->id);
-        $this->success("", ["is_host" => $room->user->id == $user->id]);
+        $this->success("", ["is_host" => $room->host()->get()->first()->id == $user->id]);
     }
 
     public function removeRoom(){

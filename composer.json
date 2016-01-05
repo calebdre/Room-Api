@@ -3,7 +3,8 @@
 	"description": "api for room",
 	"minimum-stability":"dev",
 	"require":{
-		"calebdre/api-sugar":"dev-master"
+		"calebdre/api-sugar":"dev-master",
+        "cboden/ratchet": "0.3.*"
 	},
 	"autoload":{
 		"psr-4": {"calebdre\\Room\\":"./"}
