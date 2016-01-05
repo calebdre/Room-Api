@@ -60,11 +60,11 @@ class RoomController extends ApiController{
         });
 
         if($duplicates->count() > 0) {
-            $this->fail("This user is already in the room.", ['is_host' => false]);
+            $this->success("This user is already in the room.", ['is_host' => false]);
         }
 
         if($room->host->id == $data['user_id']){
-            $this->fail("Hosts are already in the room", ['is_host' => true]);
+            $this->success("Hosts are already in the room", ['is_host' => true]);
         }
 
         $room->users()->attach($data['user_id']);
