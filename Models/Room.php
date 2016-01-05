@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model{
     public $timestamps = false;
     protected $hidden = ["user_id"];
-    protected $fillable = ["name", "user_id", "harman_speakers_enabled", "enter_code"];
+    protected $fillable = ["name", "user_id", "using_harman_speakers", "enter_code"];
 
     public function host(){
         return $this->belongsTo("calebdre\\Room\\Models\\User", "user_id");
